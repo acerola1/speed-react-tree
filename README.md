@@ -1,4 +1,5 @@
 ## About
+
 Quick and dirty implementation of a React tree component capable of handling huge number of tree-nodes.
 Uses a lightweight virtualization package [react-window](https://github.com/bvaughn/react-window).
 Tested with 100.000 node overal.
@@ -9,4 +10,5 @@ Tested with 100.000 node overal.
 - The recursive function can be refactored to iterative to prevent possible stack overflow with deep tree structures.
 
 ## Demo
-https://codesandbox.io/s/a-quick-react-tree-component-based-on-react-window-93b09
+
+https://codesandbox.io/s/github/acerola1/speed-react-tree/tree/master/

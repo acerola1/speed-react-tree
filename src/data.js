@@ -222,7 +222,7 @@ const data = [
 
 const createData = () => {
   let largeData = [...data];
-  for (let i = 0; i < 1000; i += 1) {
+  for (let i = 0; i < 20000; i += 1) {
     largeData.push({
       id: `myid-${i}`,
       label: `My Label ${i}`,
