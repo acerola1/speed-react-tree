@@ -4,7 +4,6 @@
   "dependencies": {
     "react": "^16",
     "react-dom": "^16",
-    "react-spring": "8.0.24",
     "react-virtualized-auto-sizer": "1.0.2",
     "react-window": "^1"
   },

@@ -56,9 +56,9 @@ body,
   border-left: 6px solid rgba(0, 0, 0, 0.7);
   opacity: 0.7;
   position: absolute;
-
   transform: rotate(90deg);
-  animation-duration: 0.3s;
+  transition-duration: 0.3s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .tree-item-closed > .item-arrow {

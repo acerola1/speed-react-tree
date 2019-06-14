@@ -1,24 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
 import { FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { useSpring, animated } from "react-spring";
 
-const SpeedTree = ({ data }) => {
-  const [openedNodeIds, setOpenedNodeIds] = useState([]);
-  const [selectedNode, setSelectedNode] = useState("");
-  const [lastOpened, setLastOpened] = useState("");
+class SpeedTree extends React.Component {
+  state = {
+    openedNodeIds: [],
+    selectedNode: ""
+  };
 
-  const flattenOpened = treeData => {
+  flattenTree = treeData => {
     const result = [];
-    for (let node of data) {
-      flattenNode(node, 1, result);
+    for (let node of this.props.data) {
+      this.flattenNode(node, 1, result);
     }
     return result;
   };
 
-  const flattenNode = (node, depth, result) => {
+  flattenNode = (node, depth, result) => {
     const { id, label, children } = node;
-    let collapsed = !openedNodeIds.includes(id);
+    let collapsed = !this.state.openedNodeIds.includes(id);
     result.push({
       id,
       label,
@@ -29,57 +29,45 @@ const SpeedTree = ({ data }) => {
 
     if (!collapsed && children) {
       for (let child of children) {
-        flattenNode(child, depth + 1, result);
+        this.flattenNode(child, depth + 1, result);
       }
     }
   };
 
-  const flattenedData = flattenOpened(data);
+  flattenedData = [];
 
-  const onOpen = node => {
-    setLastOpened(node.id);
+  onOpen = node => {
     return node.collapsed
-      ? setOpenedNodeIds([...openedNodeIds, node.id])
-      : setOpenedNodeIds(openedNodeIds.filter(id => id !== node.id));
-  };
-  const onSelect = (e, node) => {
-    e.stopPropagation();
-    setSelectedNode(node.id);
+      ? this.setState({ openedNodeIds: [...this.state.openedNodeIds, node.id] })
+      : this.setState({
+          openedNodeIds: this.state.openedNodeIds.filter(id => id !== node.id)
+        });
   };
 
-  const Row = ({ index, style }) => {
-    const node = flattenedData[index];
+  onSelect = (e, node) => {
+    e.stopPropagation();
+    this.setState({ selectedNode: node.id });
+  };
+
+  Row = ({ index, style }) => {
+    const node = this.flattenedData[index];
     const left = node.depth * 20;
-    const selected = node.id === selectedNode;
-    const arrowAnimation = useSpring({
-      from: {
-        transform: `rotate(${!node.collapsed ? 0 : 90}deg)`
-      },
-      to: {
-        transform: `rotate(${node.collapsed ? 0 : 90}deg)`
-      }
-    });
+    const selected = node.id === this.state.selectedNode;
+
     return (
       <div
         className={`item-background ${
           node.collapsed ? "tree-item-closed" : "tree-item-open"
         } ${selected ? "selected" : ""}`}
         style={style}
-        onClick={() => onOpen(node)}
+        onClick={() => this.onOpen(node)}
       >
         {node.hasChildren && (
-          <animated.div
-            className="item-arrow"
-            style={{
-              transform:
-                lastOpened === node.id ? arrowAnimation.transform : undefined,
-              left: `${left - 14}px`
-            }}
-          />
+          <div className="item-arrow" style={{ left: `${left - 14}px` }} />
         )}
         <div
           className="tree-item-label"
-          onClick={e => onSelect(e, node)}
+          onClick={e => this.onSelect(e, node)}
           style={{
             position: "absolute",
             left: `${left}px`,
@@ -92,22 +80,25 @@ const SpeedTree = ({ data }) => {
     );
   };
 
-  return (
-    <AutoSizer>
-      {({ height, width }) => (
-        <List
-          className="List"
-          height={height}
-          itemCount={flattenedData.length}
-          itemSize={32}
-          width={width}
-          itemKey={index => flattenedData[index].id}
-        >
-          {Row}
-        </List>
-      )}
-    </AutoSizer>
-  );
-};
+  render() {
+    this.flattenedData = this.flattenTree(this.props.data);
+    return (
+      <AutoSizer>
+        {({ height, width }) => (
+          <List
+            className="List"
+            height={height}
+            itemCount={this.flattenedData.length}
+            itemSize={32}
+            width={width}
+            itemKey={index => this.flattenedData[index].id}
+          >
+            {this.Row}
+          </List>
+        )}
+      </AutoSizer>
+    );
+  }
+}
 
 export default SpeedTree;
