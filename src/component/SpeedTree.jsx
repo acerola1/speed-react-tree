@@ -6,6 +6,7 @@ import { useSpring, animated } from "react-spring";
 const SpeedTree = ({ data }) => {
   const [openedNodeIds, setOpenedNodeIds] = useState([]);
   const [selectedNode, setSelectedNode] = useState("");
+  const [lastOpened, setLastOpened] = useState("");
 
   const flattenOpened = treeData => {
     const result = [];
@@ -35,11 +36,12 @@ const SpeedTree = ({ data }) => {
 
   const flattenedData = flattenOpened(data);
 
-  const onOpen = node =>
-    node.collapsed
+  const onOpen = node => {
+    setLastOpened(node.id);
+    return node.collapsed
       ? setOpenedNodeIds([...openedNodeIds, node.id])
       : setOpenedNodeIds(openedNodeIds.filter(id => id !== node.id));
-
+  };
   const onSelect = (e, node) => {
     e.stopPropagation();
     setSelectedNode(node.id);
@@ -50,7 +52,12 @@ const SpeedTree = ({ data }) => {
     const left = node.depth * 20;
     const selected = node.id === selectedNode;
     const arrowAnimation = useSpring({
-      transform: `rotate(${node.collapsed ? 0 : 90}deg)`
+      from: {
+        transform: `rotate(${!node.collapsed ? 0 : 90}deg)`
+      },
+      to: {
+        transform: `rotate(${node.collapsed ? 0 : 90}deg)`
+      }
     });
     return (
       <div
@@ -63,7 +70,11 @@ const SpeedTree = ({ data }) => {
         {node.hasChildren && (
           <animated.div
             className="item-arrow"
-            style={{ ...arrowAnimation, left: `${left - 14}px` }}
+            style={{
+              transform:
+                lastOpened === node.id ? arrowAnimation.transform : undefined,
+              left: `${left - 14}px`
+            }}
           />
         )}
         <div
