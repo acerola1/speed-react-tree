@@ -1,0 +1,23 @@
+{
+  "description": "Tree Demo based on  react-window vertical FixedSizeList",
+  "main": "src/index.js",
+  "dependencies": {
+    "react": "^16",
+    "react-dom": "^16",
+    "react-spring": "8.0.24",
+    "react-virtualized-auto-sizer": "1.0.2",
+    "react-window": "^1"
+  },
+  "keywords": [],
+  "name": "a-quick-react-tree-component-based-on-react-window",
+  "version": "0.0.84",
+  "devDependencies": {
+    "react-scripts": "1.0.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
