@@ -3,11 +3,6 @@ import { FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 
 class SpeedTree extends React.Component {
-  state = {
-    openedNodeIds: [],
-    selectedNode: ""
-  };
-
   flattenTree = treeData => {
     const result = [];
     for (let node of this.props.data) {
@@ -18,7 +13,7 @@ class SpeedTree extends React.Component {
 
   flattenNode = (node, depth, result) => {
     const { id, label, children } = node;
-    let collapsed = !this.state.openedNodeIds.includes(id);
+    let collapsed = !this.props.openedNodeIds.includes(id);
     result.push({
       id,
       label,
@@ -37,22 +32,18 @@ class SpeedTree extends React.Component {
   flattenedData = [];
 
   onOpen = node => {
-    return node.collapsed
-      ? this.setState({ openedNodeIds: [...this.state.openedNodeIds, node.id] })
-      : this.setState({
-          openedNodeIds: this.state.openedNodeIds.filter(id => id !== node.id)
-        });
+    this.props.onOpenChange(node.id, node.collapsed);
   };
 
   onSelect = (e, node) => {
     e.stopPropagation();
-    this.setState({ selectedNode: node.id });
+    this.props.onSelect(node.id);
   };
 
   Row = ({ index, style }) => {
     const node = this.flattenedData[index];
     const left = node.depth * 20;
-    const selected = node.id === this.state.selectedNode;
+    const selected = node.id === this.props.selectedId;
 
     return (
       <div
